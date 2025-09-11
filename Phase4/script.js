@@ -73,6 +73,46 @@ console.log("task3");
 
 // in side stack , is known as EVENT LOOP. Very very important concept.
 
+// UPDATION IN ABOVE LOGIC OF EVENT LOOP :- 
+
+/*
+Toh yaar event loop is not exactly how its defined above, rather :
+1. In JS, the main stack is called the 'call stack' and all the sync code goes into the call stack and the first priority of JS is to clear up that call stack
+therefore, executing all the synchronous code.
+2. Now, there are 2 queues : microtask queue and callback queue
+3. Microtask queue - These are high-priority tasks that must be emptied before any macrotask is allowed to run. They’re usually promise-related or “next tick” tasks.
+4. Promise.then() / Promise.catch() / Promise.finally()
+await (resumes execution of async function after await resolves)
+queueMicrotask(callback) (explicit API to push into microtask queue)
+Node.js specific: process.nextTick() (runs even before other microtasks—super high priority, Node’s little cheat code)
+
+All the above come under microtask queue
+
+5. callback queue - These are regular asynchronous callbacks scheduled by timers, events, or I/O. The event loop takes only one macrotask per tick after draining all microtasks.
+setTimeout(callback, ms)
+setInterval(callback, ms)
+setImmediate(callback) (Node.js special)
+I/O callbacks (e.g., fs.readFile, network requests, DB queries in Node)
+UI events in browsers (click, keydown, etc.)
+
+6. So the golden flow to remember is :
+
+sync tasks execution to clear up call stack --> microtask queue drained completely --> callback queue drained then.
+
+example code :
+
+console.log("sync task 1")
+setTimeout(()=>{console.log("Async Task ( Callback Queue) ")},4000)
+Promise.resolve().then(()=>{
+console.log("Async Task(Microtask queue)")
+})
+
+output:
+sync task 1
+Async Task(Microtask queue)
+Async Task ( Callback Queue) 
+*/
+
 
 // Hence, js is not async...why??... Because js is single threaded. Single Thread ka matlab sirf ek hi computation karne ki power hai ek time pe.
 
